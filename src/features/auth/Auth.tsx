@@ -1,36 +1,55 @@
-import { Link, Outlet } from 'react-router-dom';
+import React from 'react';
+import Header from '../../components/ui/Header';
+import Modal from '../../components/ui/Modal';
+import Login from '../../pages/Login';
+import Register from '../../pages/Register';
+import Dashboard from '../../pages/dashboard';
 
-const Auth = () => {
+interface AuthProps {
+	isLoginOpen: boolean;
+	isRegisterOpen: boolean;
+	openLoginModal: () => void;
+	openRegisterModal: () => void;
+	closeLoginModal: () => void;
+	closeRegisterModal: () => void;
+}
+
+const Auth: React.FC<AuthProps> = ({
+	isLoginOpen,
+	isRegisterOpen,
+	openLoginModal,
+	openRegisterModal,
+	closeLoginModal,
+	closeRegisterModal,
+}) => {
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-			<div className="w-full max-w-md space-y-8">
-				<div>
-					<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-						Welcome to Our Infradash
-					</h2>
-					<nav className="mt-8">
-						<ul className="flex justify-center space-x-4">
-							<li>
-								<Link
-									to="/login"
-									className="font-medium text-indigo-600 hover:text-indigo-500"
-								>
-									Login
-								</Link>
-							</li>
-							<li>
-								<Link
-									to="/register"
-									className="font-medium text-indigo-600 hover:text-indigo-500"
-								>
-									Register
-								</Link>
-							</li>
-						</ul>
-					</nav>
+		<div className="min-h-screen bg-gray-100">
+			<Header
+				title="Infradash"
+				userInfo={null}
+				cartItemCount={0}
+				notificationCount={0}
+				isAuthenticatedUser={false}
+				openLoginModal={openLoginModal}
+				openRegisterModal={openRegisterModal}
+			/>
+			<div className="flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+				<div className="w-full mx-auto max-w-7xl space-y-8">
+					<div>
+						<Dashboard />
+					</div>
 				</div>
-				<Outlet />
 			</div>
+			<Modal title="Sign in" isOpen={isLoginOpen} onClose={closeLoginModal}>
+				<Login onClose={closeLoginModal} />
+			</Modal>
+			<Modal
+				title="Sign up"
+				isOpen={isRegisterOpen}
+				onClose={closeRegisterModal}
+			>
+				<Register onClose={closeRegisterModal} />
+			</Modal>
 		</div>
 	);
 };
