@@ -1,10 +1,11 @@
-import { Bell, Search, ShoppingCart, User } from 'lucide-react';
+import { Bell, ShoppingCart, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Login from '../../pages/Login';
 import Register from '../../pages/Register';
 import { RootState } from '../../store/store';
 import Modal from './Modal';
+import SearchBar from './Searchbar';
 
 interface HeaderProps {
 	title?: string;
@@ -43,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({
 							href="#"
 							className="text-sm font-medium text-gray-700 hover:text-gray-900"
 						>
-							Download Infradash App
+							Download Atom App
 						</a>
 					</div>
 					<div className="flex items-center space-x-4">
@@ -111,12 +112,7 @@ const Header: React.FC<HeaderProps> = ({
 				</div>
 				<div className="mx-4 flex-grow">
 					<div className="relative">
-						<input
-							type="text"
-							placeholder="Search by filter, all categories..."
-							className="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 outline-none"
-						/>
-						<Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-700" />
+						<SearchBar onSearch={() => {}} />
 					</div>
 				</div>
 				<div className="flex items-center space-x-4">

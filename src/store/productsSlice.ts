@@ -7,7 +7,7 @@ export interface Product {
 	description: string;
 	category: string;
 	image: string;
-	rating?: {
+	rating: {
 		rate: number;
 		count: number;
 	};
@@ -19,23 +19,37 @@ interface ProductsState {
 	error: string | null;
 }
 
-const initialState: ProductsState = {
-	items: [],
-	status: 'idle',
-	error: null,
+const initialState = {
+	allProducts: { items: [], status: 'idle', error: null } as ProductsState,
+	limitedProducts: { items: [], status: 'idle', error: null } as ProductsState,
+	categoryProducts: { items: [], status: 'idle', error: null } as ProductsState,
 };
 
-export const fetchProducts = createAsyncThunk<
+export const fetchAllProducts = createAsyncThunk<
 	Product[],
 	void,
 	{ rejectValue: string }
->('products/fetchProducts', async (_, thunkAPI) => {
+>('products/fetchAllProducts', async (_, thunkAPI) => {
 	try {
-		const response = await fetch('https://fakestoreapi.com/products?limit=4');
+		const response = await fetch('https://fakestoreapi.com/products');
 		if (!response.ok) throw new Error('Network response was not ok');
 		return await response.json();
 	} catch (error) {
-		return thunkAPI.rejectWithValue('Failed to fetch products.');
+		return thunkAPI.rejectWithValue('Failed to fetch all products.');
+	}
+});
+
+export const fetchLimitedProducts = createAsyncThunk<
+	Product[],
+	void,
+	{ rejectValue: string }
+>('products/fetchLimitedProducts', async (_, thunkAPI) => {
+	try {
+		const response = await fetch('https://fakestoreapi.com/products?limit=5');
+		if (!response.ok) throw new Error('Network response was not ok');
+		return await response.json();
+	} catch (error) {
+		return thunkAPI.rejectWithValue('Failed to fetch limited products.');
 	}
 });
 
@@ -61,33 +75,53 @@ const productsSlice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
-			.addCase(fetchProducts.pending, (state) => {
-				state.status = 'loading';
+			// All Products
+			.addCase(fetchAllProducts.pending, (state) => {
+				state.allProducts.status = 'loading';
 			})
 			.addCase(
-				fetchProducts.fulfilled,
+				fetchAllProducts.fulfilled,
 				(state, action: PayloadAction<Product[]>) => {
-					state.status = 'succeeded';
-					state.items = action.payload;
+					state.allProducts.status = 'succeeded';
+					state.allProducts.items = action.payload;
 				}
 			)
-			.addCase(fetchProducts.rejected, (state, action) => {
-				state.status = 'failed';
-				state.error = action.payload || 'Failed to fetch products';
+			.addCase(fetchAllProducts.rejected, (state, action) => {
+				state.allProducts.status = 'failed';
+				state.allProducts.error =
+					action.payload || 'Failed to fetch all products';
 			})
+			// Limited Products
+			.addCase(fetchLimitedProducts.pending, (state) => {
+				state.limitedProducts.status = 'loading';
+			})
+			.addCase(
+				fetchLimitedProducts.fulfilled,
+				(state, action: PayloadAction<Product[]>) => {
+					state.limitedProducts.status = 'succeeded';
+					state.limitedProducts.items = action.payload;
+				}
+			)
+			.addCase(fetchLimitedProducts.rejected, (state, action) => {
+				state.limitedProducts.status = 'failed';
+				state.limitedProducts.error =
+					action.payload || 'Failed to fetch limited products';
+			})
+			// Category Products
 			.addCase(fetchProductsByCategory.pending, (state) => {
-				state.status = 'loading';
+				state.categoryProducts.status = 'loading';
 			})
 			.addCase(
 				fetchProductsByCategory.fulfilled,
 				(state, action: PayloadAction<Product[]>) => {
-					state.status = 'succeeded';
-					state.items = action.payload;
+					state.categoryProducts.status = 'succeeded';
+					state.categoryProducts.items = action.payload;
 				}
 			)
 			.addCase(fetchProductsByCategory.rejected, (state, action) => {
-				state.status = 'failed';
-				state.error = action.payload || 'Failed to fetch products by category';
+				state.categoryProducts.status = 'failed';
+				state.categoryProducts.error =
+					action.payload || 'Failed to fetch products by category';
 			});
 	},
 });

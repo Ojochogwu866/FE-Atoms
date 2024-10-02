@@ -1,21 +1,49 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../store/productsSlice';
+import {
+	fetchAllProducts,
+	fetchLimitedProducts,
+	fetchProductsByCategory,
+} from '../store/productsSlice';
 import { AppDispatch, RootState } from '../store/store';
 
-export const useFetchProducts = () => {
+type ProductType = 'all' | 'limited' | 'category';
+
+export const useFetchProducts = (type: ProductType, category?: string) => {
 	const dispatch = useDispatch<AppDispatch>();
-	const {
-		items: products,
-		status,
-		error,
-	} = useSelector((state: RootState) => state.products);
+	const productsState = useSelector((state: RootState) => state.products);
+
+	let products, status, error;
+
+	switch (type) {
+		case 'all':
+			({ items: products, status, error } = productsState.allProducts);
+			break;
+		case 'limited':
+			({ items: products, status, error } = productsState.limitedProducts);
+			break;
+		case 'category':
+			({ items: products, status, error } = productsState.categoryProducts);
+			break;
+	}
 
 	useEffect(() => {
 		if (status === 'idle') {
-			dispatch(fetchProducts());
+			switch (type) {
+				case 'all':
+					dispatch(fetchAllProducts());
+					break;
+				case 'limited':
+					dispatch(fetchLimitedProducts());
+					break;
+				case 'category':
+					if (category) {
+						dispatch(fetchProductsByCategory(category));
+					}
+					break;
+			}
 		}
-	}, [status, dispatch]);
+	}, [status, dispatch, type, category]);
 
 	return { products, status, error };
 };

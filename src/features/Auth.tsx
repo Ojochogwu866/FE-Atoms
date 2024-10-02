@@ -25,7 +25,7 @@ const Auth: React.FC<AuthProps> = ({
 	return (
 		<div className="min-h-screen bg-gray-100">
 			<Header
-				title="Infradash"
+				title="Atom"
 				userInfo={null}
 				cartItemCount={0}
 				notificationCount={0}

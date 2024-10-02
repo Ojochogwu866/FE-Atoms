@@ -28,9 +28,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
 	return (
 		<div className="space-y-6">
 			<div className="text-center">
-				<h2 className="text-2xl font-bold text-gray-900">
-					Welcome to Infradash
-				</h2>
+				<h2 className="text-2xl font-bold text-gray-900">Welcome to Atom</h2>
 				<p className="mt-2 text-sm text-gray-600">
 					Login to shop quality products at affordable rates on our platform
 				</p>

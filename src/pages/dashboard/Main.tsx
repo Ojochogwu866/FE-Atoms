@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { MoveLeft, MoveRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import {
 	NoProducts,
 } from '../../features/Products/ProductsState';
 import { useFetchProducts } from '../../hooks/useFetch';
-import { fetchProducts } from '../../store/productsSlice';
+import { fetchLimitedProducts } from '../../store/productsSlice';
 import { AppDispatch } from '../../store/store';
 
 const slides = [
@@ -40,7 +40,7 @@ const categories = [
 ];
 
 function Main() {
-	const { products, status, error } = useFetchProducts();
+	const { products, status, error } = useFetchProducts('limited');
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [categoryImages, setCategoryImages] = useState<Record<string, string>>(
 		{}
@@ -84,7 +84,7 @@ function Main() {
 
 	useEffect(() => {
 		if (status === 'idle') {
-			dispatch(fetchProducts());
+			dispatch(fetchLimitedProducts());
 		}
 	}, [status, dispatch]);
 
@@ -128,7 +128,7 @@ function Main() {
 			case 'loading':
 				return <LoadingProducts />;
 			case 'failed':
-				return <ErrorProducts error={error} />;
+				return <ErrorProducts error={error || 'Unknown error occurred'} />;
 			case 'succeeded':
 				if (products.length === 0) {
 					return <NoProducts />;
@@ -191,18 +191,18 @@ function Main() {
 				</div>
 				<div className="flex w-1/2 flex-col items-center">
 					{renderProducts()}
-					<div className="mt-4 flex w-full items-end justify-end space-x-4">
+					<div className="mt-4 flex w-full items-center justify-end gap-4">
 						<button
 							onClick={handlePrevProducts}
 							className="rounded-full bg-gray-200 p-2 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
 						>
-							<ArrowLeft size={24} />
+							<MoveLeft size={26} color="#374151" strokeWidth={1} />
 						</button>
 						<button
 							onClick={handleNextProducts}
 							className="rounded-full bg-gray-200 p-2 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
 						>
-							<ArrowRight size={24} />
+							<MoveRight size={32} color="#374151" strokeWidth={1} />
 						</button>
 					</div>
 				</div>
