@@ -1,9 +1,9 @@
 import React from 'react';
-import Header from '../../components/ui/Header';
-import Modal from '../../components/ui/Modal';
-import Login from '../../pages/Login';
-import Register from '../../pages/Register';
-import Dashboard from '../../pages/dashboard';
+import Header from '../components/ui/Header';
+import Modal from '../components/ui/Modal';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
+import Dashboard from '../pages/dashboard';
 
 interface AuthProps {
 	isLoginOpen: boolean;
@@ -34,7 +34,7 @@ const Auth: React.FC<AuthProps> = ({
 				openRegisterModal={openRegisterModal}
 			/>
 			<div className="flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-				<div className="w-full mx-auto max-w-7xl space-y-8">
+				<div className="mx-auto w-full max-w-7xl space-y-8">
 					<div>
 						<Dashboard />
 					</div>

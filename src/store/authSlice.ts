@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../store/store';
+import { RootState } from './store';
 
 interface AuthState {
 	user: User | null;
@@ -11,10 +11,8 @@ interface AuthState {
 interface User {
 	id: string;
 	email: string;
-	// Add other user properties as needed
 }
 
-// Define the initial state
 const initialState: AuthState = {
 	user: null,
 	isAuthenticated: false,
@@ -22,7 +20,6 @@ const initialState: AuthState = {
 	error: null,
 };
 
-// Create an async thunk for login
 export const loginUser = createAsyncThunk(
 	'auth/login',
 	async (
@@ -30,7 +27,6 @@ export const loginUser = createAsyncThunk(
 		{ rejectWithValue }
 	) => {
 		try {
-			// Replace this with your actual API call
 			const response = await fetch('/api/login', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -49,8 +45,6 @@ export const loginUser = createAsyncThunk(
 	}
 );
 
-// Add this to your existing authSlice.ts
-
 export const registerUser = createAsyncThunk(
 	'auth/register',
 	async (
@@ -58,7 +52,6 @@ export const registerUser = createAsyncThunk(
 		{ rejectWithValue }
 	) => {
 		try {
-			// Replace this with your actual API call
 			const response = await fetch('/api/register', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -84,7 +77,6 @@ const authSlice = createSlice({
 		logout: (state) => {
 			state.user = null;
 			state.isAuthenticated = false;
-			// You might want to clear the token from localStorage here
 		},
 	},
 	extraReducers: (builder) => {

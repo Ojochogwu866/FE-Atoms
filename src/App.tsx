@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import Auth from './features/auth/Auth';
-import { selectIsAuthenticated } from './features/auth/authSlice';
+import Auth from './features/Auth';
+import { selectIsAuthenticated } from './store/authSlice';
 
 function App() {
 	const [isLoginOpen, setIsLoginOpen] = useState(false);

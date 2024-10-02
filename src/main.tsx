@@ -3,10 +3,11 @@ import * as ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.tsx';
-import Auth from './features/auth/Auth.tsx';
+import Auth from './features/Auth.tsx';
 import './index.css';
+import Category from './pages/Category.tsx';
 import Dashboard from './pages/dashboard';
-import ErrorPage from './pages/errorPage.tsx';
+import ErrorPage from './pages/ErrorPage.tsx';
 import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
 import { store } from './store/store.ts';
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
 			},
 			// Add other authenticated routes here
 		],
+	},
+	{
+		path: '/category/:categoryName',
+		element: <Category />,
 	},
 	{
 		path: '/',

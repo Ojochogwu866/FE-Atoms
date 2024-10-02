@@ -1,23 +1,24 @@
 import { Bell, Search, ShoppingCart, User } from 'lucide-react';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import Login from '../../pages/Login';
 import Register from '../../pages/Register';
+import { RootState } from '../../store/store';
 import Modal from './Modal';
 
 interface HeaderProps {
-	title: string;
-	userInfo: { name: string } | null;
-	cartItemCount: number;
-	notificationCount: number;
-	isAuthenticatedUser: boolean;
-	openLoginModal: () => void;
-	openRegisterModal: () => void;
+	title?: string;
+	userInfo?: { name: string } | null;
+	cartItemCount?: number;
+	notificationCount?: number;
+	isAuthenticatedUser?: boolean;
+	openLoginModal?: () => void;
+	openRegisterModal?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
 	title,
 	userInfo,
-	cartItemCount,
 	notificationCount,
 	isAuthenticatedUser,
 	openLoginModal,
@@ -26,6 +27,12 @@ const Header: React.FC<HeaderProps> = ({
 	const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 	const [isLoginOpen, setIsLoginOpen] = useState(false);
 	const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+	const cartItems = useSelector((state: RootState) => state.cart.items);
+	const cartItemCount = cartItems.reduce(
+		(total, item) => total + item.quantity,
+		0
+	);
 
 	return (
 		<header className="bg-white shadow-sm">
@@ -109,12 +116,12 @@ const Header: React.FC<HeaderProps> = ({
 							placeholder="Search by filter, all categories..."
 							className="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 outline-none"
 						/>
-						<Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+						<Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-700" />
 					</div>
 				</div>
 				<div className="flex items-center space-x-4">
 					<button className="relative p-2">
-						<Bell className="h-6 w-6 text-gray-500" />
+						<Bell className="h-6 w-6 text-gray-700" />
 						{notificationCount > 0 && (
 							<span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-xs text-white">
 								{notificationCount}
@@ -122,7 +129,7 @@ const Header: React.FC<HeaderProps> = ({
 						)}
 					</button>
 					<button className="relative p-2">
-						<ShoppingCart className="h-6 w-6 text-gray-500" />
+						<ShoppingCart className="h-6 w-6 text-gray-700" />
 						{cartItemCount > 0 && (
 							<span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
 								{cartItemCount}

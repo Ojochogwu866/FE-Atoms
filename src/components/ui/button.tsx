@@ -1,6 +1,11 @@
 import React from 'react';
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'outline';
+type ButtonVariant =
+	| 'primary'
+	| 'secondary'
+	| 'danger'
+	| 'outline'
+	| 'noOutline';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	variant?: ButtonVariant;
