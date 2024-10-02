@@ -1,5 +1,5 @@
 import gsap from 'gsap';
-import { Search, Zap } from 'lucide-react';
+import { Search, Tally4 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Button from '../../components/ui/button';
 import ProductCard from '../../features/Products/ProductCard';
@@ -57,7 +57,7 @@ function AllProducts() {
 		<div className="sticky top-0 z-10 mt-6 rounded-md bg-white p-4 shadow-sm">
 			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 				<div className="flex items-center gap-2">
-					<Zap size={36} strokeWidth={2} color="#374151" />
+					<Tally4 size={36} strokeWidth={2} color="#374151" />
 					<h1 className="text-3xl font-bold text-gray-700">All Products</h1>
 				</div>
 				<div className="relative">

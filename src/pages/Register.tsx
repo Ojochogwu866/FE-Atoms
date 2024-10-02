@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AppleIcon from '../assets/icons/apple.svg';
 import GoogleIcon from '../assets/icons/google.svg';
 import Button from '../components/ui/button';
 import Input from '../components/ui/input';
@@ -79,26 +78,16 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
 					<span className="bg-white px-2 text-gray-500">Or sign up with</span>
 				</div>
 			</div>
-			<div className="grid grid-cols-2 gap-3">
+			<div className="w-full">
 				<Button
 					type="button"
-					className="flex items-center justify-center border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+					className="flex w-full justify-center"
 					onClick={() => {
-						/* Implement Google signup */
+						/* Implement Google login */
 					}}
 				>
-					<GoogleIcon />
+					<img src={GoogleIcon} alt="Google" className="mr-2 h-5 w-5" />
 					Google
-				</Button>
-				<Button
-					type="button"
-					className="flex items-center justify-center bg-black text-white hover:bg-gray-800"
-					onClick={() => {
-						/* Implement Apple signup */
-					}}
-				>
-					<AppleIcon />
-					Apple
 				</Button>
 			</div>
 		</div>
