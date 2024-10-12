@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import Footer from './components/ui/Footer';
 import Auth from './features/Auth';
 import { selectIsAuthenticated } from './store/authSlice';
 
@@ -39,6 +40,7 @@ function App() {
 					closeRegisterModal={closeRegisterModal}
 				/>
 			)}
+			<Footer />
 		</div>
 	);
 }

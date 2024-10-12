@@ -1,16 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface Product {
-	id: number;
-	title: string;
-	price: number;
+	_id: string;
+	name: string;
+	price: string;
 	description: string;
 	category: string;
-	image: string;
-	rating: {
-		rate: number;
-		count: number;
-	};
+	images: string[];
+	createdAt: string;
+	updatedAt: string;
 }
 
 interface ProductsState {
@@ -31,9 +29,14 @@ export const fetchAllProducts = createAsyncThunk<
 	{ rejectValue: string }
 >('products/fetchAllProducts', async (_, thunkAPI) => {
 	try {
-		const response = await fetch('https://fakestoreapi.com/products');
+		const response = await fetch('http://localhost:3000/api/products');
 		if (!response.ok) throw new Error('Network response was not ok');
-		return await response.json();
+		const data = await response.json();
+		if (data.status === 'success' && Array.isArray(data.data.products)) {
+			return data.data.products;
+		} else {
+			throw new Error('Invalid data structure');
+		}
 	} catch (error) {
 		return thunkAPI.rejectWithValue('Failed to fetch all products.');
 	}
@@ -41,13 +44,20 @@ export const fetchAllProducts = createAsyncThunk<
 
 export const fetchLimitedProducts = createAsyncThunk<
 	Product[],
-	void,
+	number,
 	{ rejectValue: string }
->('products/fetchLimitedProducts', async (_, thunkAPI) => {
+>('products/fetchLimitedProducts', async (limit, thunkAPI) => {
 	try {
-		const response = await fetch('https://fakestoreapi.com/products?limit=5');
+		const response = await fetch(
+			`http://localhost:3000/api/products?limit=${limit}`
+		);
 		if (!response.ok) throw new Error('Network response was not ok');
-		return await response.json();
+		const data = await response.json();
+		if (data.status === 'success' && Array.isArray(data.data.products)) {
+			return data.data.products;
+		} else {
+			throw new Error('Invalid data structure');
+		}
 	} catch (error) {
 		return thunkAPI.rejectWithValue('Failed to fetch limited products.');
 	}
@@ -60,10 +70,15 @@ export const fetchProductsByCategory = createAsyncThunk<
 >('products/fetchProductsByCategory', async (category, thunkAPI) => {
 	try {
 		const response = await fetch(
-			`https://fakestoreapi.com/products/category/${category}`
+			`http://localhost:3000/api/products/category/${category}`
 		);
 		if (!response.ok) throw new Error('Network response was not ok');
-		return await response.json();
+		const data = await response.json();
+		if (data.status === 'success' && Array.isArray(data.data.products)) {
+			return data.data.products;
+		} else {
+			throw new Error('Invalid data structure');
+		}
 	} catch (error) {
 		return thunkAPI.rejectWithValue('Failed to fetch products by category.');
 	}

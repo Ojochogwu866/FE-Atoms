@@ -30,21 +30,53 @@ const slides = [
 ];
 
 const categories = [
-	{ name: 'Hats', searchCategory: "men's clothing" },
-	{ name: 'Shorts', searchCategory: "men's clothing" },
-	{ name: 'Wrist Watches', searchCategory: 'jewelery' },
-	{ name: 'Jewelries', searchCategory: 'jewelery' },
-	{ name: 'Hoodies', searchCategory: "women's clothing" },
-	{ name: 'Pants', searchCategory: "women's clothing" },
-	{ name: 'Bags', searchCategory: "women's clothing" },
+	{
+		name: 'Hats',
+		searchCategory: "Men's Wear",
+		image:
+			'https://media.istockphoto.com/id/621487426/photo/lumbersexual-bearded-senior-men-hipster.jpg?s=612x612&w=0&k=20&c=IZVWeT2ySuArqYmFTFEpvRqN5dVMkUtgFNGdI8NJ57E=',
+	},
+	{
+		name: 'Shorts',
+		searchCategory: "Men's Wear",
+		image:
+			'https://media.istockphoto.com/id/2149765102/photo/white-short-pants-front-and-back.jpg?s=612x612&w=0&k=20&c=UiQMDTskSi3Cnbr2Ymye9FezW4xT8DhLiAcr2lAzk0o=',
+	},
+	{
+		name: 'Wrist Watches',
+		searchCategory: 'jewelery',
+		image:
+			'https://media.istockphoto.com/id/145784198/video/watchmaker-assembling-watch.jpg?s=640x640&k=20&c=9HvtDuAQNZUdAecf9uV_CRYdpM2UOUlvKCVn-WzYeGw=',
+	},
+	{
+		name: 'Jewelries',
+		searchCategory: 'jewelery',
+		image:
+			'https://media.istockphoto.com/id/1491130656/photo/platinum-and-gold-ring-with-square-diamonds-floating-on-white-background-from-design-with-3d.jpg?s=612x612&w=0&k=20&c=sc4yMgAq2ZaF-Vs7C9FnOAu9hoNwtFEBPYYdECQv-Ts=',
+	},
+	{
+		name: 'Hoodies',
+		searchCategory: 'Unisex Wear',
+		image:
+			'https://media.istockphoto.com/id/1327784914/photo/cheerful-young-man-wearing-lilac-hoodie.jpg?s=612x612&w=0&k=20&c=ig_Z1-DP5IgNakJosnwJMqrFd4iq9QG80kUUb0FbWhg=',
+	},
+	{
+		name: 'Pants',
+		searchCategory: 'Womens Wear',
+		image:
+			'https://media.istockphoto.com/id/1426592893/photo/pants-clothes-isolated-in-white-background-invisible-mannequin.jpg?s=612x612&w=0&k=20&c=BLNc1wXgZCaYu7o0N6Qhxho0ihA7EQf4zCHl3KeZuRg=',
+	},
+	{
+		name: 'Bags',
+		searchCategory: "Women's Wear",
+		image:
+			'https://media.istockphoto.com/id/1777940282/vector/hand-drawn-shopping-bag-icon-vector-illustration.jpg?s=612x612&w=0&k=20&c=cqgnS77ZySAdX1TdiPl-YOj3zriGhgvmER4PwNdsmbk=',
+	},
 ];
 
 function Main() {
 	const { products, status, error } = useFetchProducts('limited');
 	const [currentSlide, setCurrentSlide] = useState(0);
-	const [categoryImages, setCategoryImages] = useState<Record<string, string>>(
-		{}
-	);
 	const [currentProductIndex, setCurrentProductIndex] = useState(0);
 	const dispatch = useDispatch<AppDispatch>();
 	const navigate = useNavigate();
@@ -56,21 +88,6 @@ function Main() {
 
 		return () => clearInterval(timer);
 	}, []);
-
-	useEffect(() => {
-		if (products.length > 0) {
-			const images: Record<string, string> = {};
-			categories.forEach((category) => {
-				const product = products.find(
-					(p) => p.category === category.searchCategory
-				);
-				if (product) {
-					images[category.name] = product.image;
-				}
-			});
-			setCategoryImages(images);
-		}
-	}, [products]);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -105,23 +122,33 @@ function Main() {
 		navigate(`/category/${searchCategory}`);
 	};
 
-	const ProductCard = ({ product }) => (
-		<motion.div
-			initial={{ opacity: 0, x: 20 }}
-			animate={{ opacity: 1, x: 0 }}
-			exit={{ opacity: 0, x: -20 }}
-			transition={{ duration: 0.5 }}
-			className="flex h-[300px] w-[300px] flex-col items-center justify-center rounded-lg border bg-white p-4 text-left shadow-sm"
-		>
-			<img
-				src={product.image}
-				alt={product.title}
-				className="mb-2 h-32 w-full object-contain"
-			/>
-			<h3 className="w-full truncate text-sm font-semibold">{product.title}</h3>
-			<p className="text-gray-600">${product.price}</p>
-		</motion.div>
-	);
+	const ProductCard = ({ product }) => {
+		if (!product) {
+			return null;
+		}
+		return (
+			<motion.div
+				initial={{ opacity: 0, x: 20 }}
+				animate={{ opacity: 1, x: 0 }}
+				exit={{ opacity: 0, x: -20 }}
+				transition={{ duration: 0.5 }}
+				className="group relative h-[300px] w-full max-w-[300px] overflow-hidden rounded-lg border bg-white shadow-sm"
+			>
+				<img
+					src={product.images}
+					alt={product.name}
+					className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+				/>
+				<div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+				<div className="absolute bottom-0 left-0 right-0 p-4 text-left opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+					<h3 className="mb-1 truncate text-sm font-semibold text-white">
+						{product.name}
+					</h3>
+					<p className="text-gray-300">{product.price}</p>
+				</div>
+			</motion.div>
+		);
+	};
 
 	const renderProducts = () => {
 		switch (status) {
@@ -135,7 +162,7 @@ function Main() {
 				}
 				return (
 					<AnimatePresence mode="wait">
-						<div className="flex space-x-4">
+						<div className="flex w-full flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
 							<ProductCard product={products[currentProductIndex]} />
 							<ProductCard
 								product={products[(currentProductIndex + 1) % products.length]}
@@ -149,9 +176,9 @@ function Main() {
 	};
 
 	return (
-		<div className="flex flex-col sm:px-6 lg:px-8">
-			<div className="flex w-full">
-				<div className="flex w-1/2 flex-col space-y-4">
+		<div className="flex flex-col px-4 sm:px-6 lg:px-8">
+			<div className="flex w-full flex-col lg:flex-row">
+				<div className="mb-8 flex w-full flex-col space-y-4 lg:mb-0 lg:w-1/2">
 					<p className="text-base font-normal text-gray-500">
 						#Hot Sales Today
 					</p>
@@ -162,7 +189,7 @@ function Main() {
 							animate={{ opacity: 1, x: 0 }}
 							exit={{ opacity: 0, x: -20 }}
 							transition={{ duration: 0.5 }}
-							className="max-w-[500px] text-6xl font-extrabold leading-[70px] text-gray-700"
+							className="max-w-[500px] text-3xl font-extrabold leading-tight text-[#4B5320] sm:text-4xl sm:leading-[70px] md:text-5xl lg:text-6xl"
 							dangerouslySetInnerHTML={{ __html: slides[currentSlide].title }}
 						/>
 					</AnimatePresence>
@@ -189,42 +216,42 @@ function Main() {
 						))}
 					</div>
 				</div>
-				<div className="flex w-1/2 flex-col items-center">
+				<div className="flex w-full flex-col items-center lg:w-1/2">
 					{renderProducts()}
 					<div className="mt-4 flex w-full items-center justify-end gap-4">
 						<button
 							onClick={handlePrevProducts}
 							className="rounded-full bg-gray-200 p-2 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
 						>
-							<MoveLeft size={26} color="#374151" strokeWidth={1} />
+							<MoveLeft size={26} color="#4B5320" strokeWidth={1} />
 						</button>
 						<button
 							onClick={handleNextProducts}
 							className="rounded-full bg-gray-200 p-2 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
 						>
-							<MoveRight size={32} color="#374151" strokeWidth={1} />
+							<MoveRight size={32} color="#4B5320" strokeWidth={1} />
 						</button>
 					</div>
 				</div>
 			</div>
-			<div className="mt-6 rounded-md bg-white p-8 py-8">
+			<div className="mt-6 rounded-md bg-white p-4 sm:p-8">
 				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
 					{categories.map((category) => (
 						<button
 							key={category.name}
 							onClick={() => handleCategoryClick(category.name)}
-							className="flex flex-col items-center justify-center rounded-md bg-gray-100 p-4 transition-colors duration-200 hover:bg-gray-200"
+							className="group relative h-32 w-full overflow-hidden rounded-md transition-transform duration-300 hover:scale-105 sm:h-40"
 						>
-							{categoryImages[category.name] ? (
-								<img
-									src={categoryImages[category.name]}
-									alt={category.name}
-									className="mb-2 h-16 w-16 object-contain"
-								/>
-							) : (
-								<div className="mb-2 h-16 w-16 bg-gray-200" />
-							)}
-							<span className="text-sm font-medium">{category.name}</span>
+							<img
+								src={category.image}
+								alt={category.name}
+								className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+							/>
+							<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition-all duration-300 group-hover:bg-opacity-50">
+								<span className="text-lg font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+									{category.name}
+								</span>
+							</div>
 						</button>
 					))}
 				</div>

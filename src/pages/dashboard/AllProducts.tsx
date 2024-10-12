@@ -16,6 +16,7 @@ function AllProducts() {
 	const [selectedCategory, setSelectedCategory] = useState('all');
 	const [displayCount, setDisplayCount] = useState(8);
 	const containerRef = useRef<HTMLDivElement>(null);
+
 	const categories = ['all', ...new Set(products.map((p) => p.category))];
 
 	useEffect(() => {
@@ -39,7 +40,7 @@ function AllProducts() {
 	}, [status, selectedCategory, searchTerm, displayCount]);
 
 	const filteredProducts = products.filter((product) => {
-		const matchesSearch = product.title
+		const matchesSearch = product.name
 			.toLowerCase()
 			.includes(searchTerm.toLowerCase());
 		const matchesCategory =
@@ -57,8 +58,8 @@ function AllProducts() {
 		<div className="sticky top-0 z-10 mt-6 rounded-md bg-white p-4 shadow-sm">
 			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 				<div className="flex items-center gap-2">
-					<Tally4 size={36} strokeWidth={2} color="#374151" />
-					<h1 className="text-3xl font-bold text-gray-700">All Products</h1>
+					<Tally4 size={36} strokeWidth={2} color="#4B5320" />
+					<h1 className="text-3xl font-bold text-[#4B5320]">All Products</h1>
 				</div>
 				<div className="relative">
 					<Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -81,7 +82,7 @@ function AllProducts() {
 						}}
 						className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
 							selectedCategory === category
-								? 'bg-gray-700 text-white'
+								? 'bg-[#4B5320] text-white'
 								: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
 						}`}
 					>
@@ -106,11 +107,11 @@ function AllProducts() {
 					<>
 						<div
 							ref={containerRef}
-							className="grid grid-cols-4 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+							className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
 						>
 							{displayedProducts.map((product) => (
 								<div
-									key={product.id}
+									key={product._id}
 									className="transform transition-transform hover:scale-105"
 								>
 									<ProductCard product={product} />
@@ -118,7 +119,7 @@ function AllProducts() {
 							))}
 						</div>
 						{displayCount < filteredProducts.length && (
-							<div className="mt-20 flex justify-center">
+							<div className="mt-10 flex justify-center">
 								<Button onClick={handleSeeMore}>See More</Button>
 							</div>
 						)}

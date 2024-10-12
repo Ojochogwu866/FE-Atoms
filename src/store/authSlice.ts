@@ -27,7 +27,7 @@ export const loginUser = createAsyncThunk(
 		{ rejectWithValue }
 	) => {
 		try {
-			const response = await fetch('/api/login', {
+			const response = await fetch('http://localhost:3000/api/auth/login', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(credentials),
@@ -52,7 +52,7 @@ export const registerUser = createAsyncThunk(
 		{ rejectWithValue }
 	) => {
 		try {
-			const response = await fetch('/api/register', {
+			const response = await fetch('http://localhost:3000/api/auth/signup', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(credentials),
