@@ -235,7 +235,11 @@ function Main() {
 				</div>
 			</div>
 			<div className="mt-6 rounded-md bg-white p-4 sm:p-8">
-				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
+				<div>
+					<h1 className="text-2xl font-bold text-[#4B5320]">Collections</h1>
+					<p>Bowse through our available collections and pick an option of best fit</p>
+				</div>
+				<div className="grid grid-cols-2 gap-4 mt-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
 					{categories.map((category) => (
 						<button
 							key={category.name}

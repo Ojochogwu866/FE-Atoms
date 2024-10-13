@@ -58,15 +58,15 @@ function AllProducts() {
 		<div className="sticky top-0 z-10 mt-6 rounded-md bg-white p-4 shadow-sm">
 			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 				<div className="flex items-center gap-2">
-					<Tally4 size={36} strokeWidth={2} color="#4B5320" />
-					<h1 className="text-3xl font-bold text-[#4B5320]">All Products</h1>
+					<Tally4 size={24} strokeWidth={2} color="#4B5320" />
+					<h1 className="text-2xl font-bold text-[#4B5320]">All Products</h1>
 				</div>
 				<div className="relative">
 					<Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
 					<input
 						type="text"
 						placeholder="Search products..."
-						className="w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 focus:border-gray-500 focus:outline-none"
+						className="w-full rounded-md border text-sm border-gray-300 py-2 pl-10 pr-4 focus:border-gray-500 focus:outline-none"
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
 					/>

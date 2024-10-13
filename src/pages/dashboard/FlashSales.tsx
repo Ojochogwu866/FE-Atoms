@@ -86,8 +86,8 @@ function FlashSales() {
 		<div className="mt-6 rounded-md bg-white p-8">
 			<div className="mb-6 flex items-center justify-between">
 				<div className="flex items-center gap-2">
-					<Zap size={36} strokeWidth={2} color="#4B5320" />
-					<h1 className="text-3xl font-bold text-[#4B5320]">Flash Sales</h1>
+					<Zap size={24} strokeWidth={2} color="#4B5320" />
+					<h1 className="text-2xl font-bold text-[#4B5320]">Flash Sales</h1>
 				</div>
 				{showNavButtons && (
 					<div className="flex gap-4">

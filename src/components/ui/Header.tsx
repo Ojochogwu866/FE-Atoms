@@ -1,39 +1,39 @@
 import { Bell, ShoppingCart, User } from 'lucide-react';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Login from '../../pages/Login';
 import Register from '../../pages/Register';
 import { RootState } from '../../store/store';
+import { selectIsAuthenticated, selectUser, logout } from '../../store/authSlice';
 import Modal from './Modal';
 import SearchBar from './Searchbar';
 
 interface HeaderProps {
 	title?: string;
-	userInfo?: { name: string } | null;
-	cartItemCount?: number;
 	notificationCount?: number;
-	isAuthenticatedUser?: boolean;
-	openLoginModal?: () => void;
-	openRegisterModal?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
 	title,
-	userInfo,
 	notificationCount,
-	isAuthenticatedUser,
-	openLoginModal,
-	openRegisterModal,
 }) => {
 	const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 	const [isLoginOpen, setIsLoginOpen] = useState(false);
 	const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
+	const dispatch = useDispatch();
+	const isAuthenticated = useSelector(selectIsAuthenticated);
+	const user = useSelector(selectUser);
 	const cartItems = useSelector((state: RootState) => state.cart.items);
 	const cartItemCount = cartItems.reduce(
 		(total, item) => total + item.quantity,
 		0
 	);
+
+	const handleLogout = () => {
+		dispatch(logout());
+		setIsProfileMenuOpen(false);
+	};
 
 	return (
 		<header className="bg-white shadow-sm">
@@ -48,16 +48,16 @@ const Header: React.FC<HeaderProps> = ({
 						</a>
 					</div>
 					<div className="flex items-center space-x-4">
-						{!isAuthenticatedUser ? (
+						{!isAuthenticated ? (
 							<>
 								<button
-									onClick={openLoginModal}
+									onClick={() => setIsLoginOpen(true)}
 									className="text-sm font-medium text-gray-700 hover:text-gray-900"
 								>
 									Sign In
 								</button>
 								<button
-									onClick={openRegisterModal}
+									onClick={() => setIsRegisterOpen(true)}
 									className="text-sm font-medium text-gray-700 hover:text-gray-900"
 								>
 									Sign Up
@@ -70,10 +70,10 @@ const Header: React.FC<HeaderProps> = ({
 									className="flex items-center space-x-2"
 								>
 									<User className="h-6 w-6 text-gray-500" />
-									<span className="text-gray-700">{userInfo.name}</span>
+									<span className="text-gray-700">{user?.email}</span>
 								</button>
 								{isProfileMenuOpen && (
-									<div className="absolute right-0 mt-2 w-48 rounded-md bg-white py-1 shadow-lg">
+									<div className="absolute right-0 z-40 mt-2 w-48 rounded-md bg-white py-1 shadow-lg">
 										<a
 											href="#"
 											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -86,28 +86,22 @@ const Header: React.FC<HeaderProps> = ({
 										>
 											Settings
 										</a>
-										<a
-											href="#"
-											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+										<button
+											onClick={handleLogout}
+											className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 										>
 											Sign out
-										</a>
+										</button>
 									</div>
 								)}
 							</div>
 						)}
-						{/* Other options can be added here */}
 					</div>
 				</div>
 			</div>
 
 			<div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
 				<div className="flex items-center space-x-4">
-					{/* <img
-						src="/path-to-infradash-icon.png"
-						alt="Infradash"
-						className="h-8 w-8"
-					/> */}
 					<h1 className="text-2xl font-bold text-gray-900">{title}</h1>
 				</div>
 				<div className="mx-4 flex-grow">

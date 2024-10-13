@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import Footer from './components/ui/Footer';
 import Auth from './features/Auth';
+import DropNotification from './components/ui/DropNotification';
 import { selectIsAuthenticated } from './store/authSlice';
+import Header from './components/ui/Header';
 
 function App() {
 	const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -22,13 +24,17 @@ function App() {
 
 	return (
 		<div className="min-h-screen bg-gray-100">
+			<DropNotification />
 			{isAuthenticated ? (
 				<>
-					<header>{/* Add your header content */}</header>
-					<main>
-						<Outlet />
-					</main>
-					<footer>{/* Add your footer content */}</footer>
+				<Auth
+					isLoginOpen={!isLoginOpen}
+					isRegisterOpen={!isRegisterOpen}
+					openLoginModal={openLoginModal}
+					openRegisterModal={openRegisterModal}
+					closeLoginModal={closeLoginModal}
+					closeRegisterModal={closeRegisterModal}
+				/>
 				</>
 			) : (
 				<Auth
