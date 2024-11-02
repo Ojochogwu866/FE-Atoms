@@ -1,73 +1,79 @@
 import { Eye, Heart, Star } from 'lucide-react';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Button from '../../components/ui/button';
+import { addToCart } from '../../store/cartSlice';
 import { Product } from '../../store/productsSlice';
 
 interface ProductCardProps {
 	product: Product;
-	onAddToCart: (productId: number) => void;
-	onQuickView: (product: Product) => void;
+	setSelectedProduct: (product: Product | null) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
 	product,
-	onAddToCart,
-	onQuickView,
+	setSelectedProduct,
 }) => {
 	const [isLiked, setIsLiked] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
+	const dispatch = useDispatch();
+
+	const handleAddToCart = () => {
+		dispatch(
+			addToCart({
+				id: product._id,
+				title: product.name,
+				price: product.price,
+				image: product.images,
+				quantity: 1,
+			})
+		);
+	};
 
 	return (
 		<div
-			className="relative flex h-[400px] w-64 flex-col bg-white transition-all duration-300"
+			className="relative rounded-lg bg-white p-4 shadow-sm transition-all hover:shadow-md"
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			<div className="absolute right-2 top-2 z-10">
-				<button
-					className={`rounded-full bg-white p-2 transition-colors duration-300 ${
-						isLiked ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
-					}`}
-					onClick={() => setIsLiked(!isLiked)}
-				>
-					<Heart className="h-5 w-5" fill={isLiked ? 'currentColor' : 'none'} />
-				</button>
-			</div>
-			<div className="relative mb-4 h-[280px] w-full">
+			<button
+				className={`absolute right-4 top-4 z-10 rounded-full p-2 ${
+					isLiked ? 'bg-red-50 text-red-500' : 'bg-gray-50'
+				}`}
+				onClick={() => setIsLiked(!isLiked)}
+			>
+				<Heart className="h-5 w-5" fill={isLiked ? 'currentColor' : 'none'} />
+			</button>
+
+			<div className="relative aspect-square overflow-hidden rounded-lg">
 				<img
 					src={product.images}
 					alt={product.name}
-					className="h-full w-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-105"
+					className="h-full w-full object-cover"
 				/>
 				{isHovered && (
-					<div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black bg-opacity-50 transition-opacity duration-300">
+					<div className="absolute inset-0 flex items-center justify-center gap-2 bg-black bg-opacity-30">
 						<button
-							className="rounded-full bg-white p-2 text-gray-800 hover:bg-gray-100"
-							onClick={() => onQuickView(product)}
+							onClick={() => setSelectedProduct(product)}
+							className="text-white text-sm flex items-center"
 						>
-							<Eye className="h-5 w-5" />
+							<Eye className="mr-2 h-4 w-4" />
+							View item
 						</button>
 					</div>
 				)}
-				<Button
-					className="absolute bottom-4 right-4 flex w-[100px] items-center justify-center rounded-full text-base font-normal transition-colors duration-300"
-					onClick={() => onAddToCart(product.id)}
-				>
-					Buy Now
-				</Button>
 			</div>
-			<div className="flex flex-col items-start">
-				<h3 className="mb-2 line-clamp-2 text-sm font-semibold">
-					{product.name}
-				</h3>
-				<div className="mb-2 flex items-center">
-					<Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
-					<span className="text-sm text-gray-700">{product?.rating}</span>
-					<span className="ml-1 text-xs text-gray-400">
-						({product?.rating})
-					</span>
+
+			<div className="mt-4">
+				<h3 className="text-lg font-semibold">{product.name}</h3>
+				<div className="mt-1 flex items-center">
+					<Star className="h-4 w-4 text-yellow-400" />
+					<span className="ml-1 text-sm text-gray-600">{product?.rating}</span>
 				</div>
-				<p className="text-base font-bold text-gray-700">{product.price}</p>
+				<div className="mt-2 flex items-center justify-between">
+					<span className="text-lg font-bold">${product.price}</span>
+					<Button onClick={handleAddToCart}>Add to cart</Button>
+				</div>
 			</div>
 		</div>
 	);
