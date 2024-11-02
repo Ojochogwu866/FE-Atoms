@@ -66,7 +66,7 @@ function AllProducts() {
 					<input
 						type="text"
 						placeholder="Search products..."
-						className="w-full rounded-md border text-sm border-gray-300 py-2 pl-10 pr-4 focus:border-gray-500 focus:outline-none"
+						className="w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 text-sm focus:border-gray-500 focus:outline-none"
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
 					/>

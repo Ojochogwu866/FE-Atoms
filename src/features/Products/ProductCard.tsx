@@ -1,4 +1,4 @@
-import { Eye, Heart, ShoppingCart, Star } from 'lucide-react';
+import { Eye, Heart, Star } from 'lucide-react';
 import React, { useState } from 'react';
 import Button from '../../components/ui/button';
 import { Product } from '../../store/productsSlice';
@@ -19,7 +19,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 	return (
 		<div
-			className="relative flex h-[400px] w-64 flex-col bg-white transition-all duration-300 "
+			className="relative flex h-[400px] w-64 flex-col bg-white transition-all duration-300"
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
@@ -40,7 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 					className="h-full w-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-105"
 				/>
 				{isHovered && (
-					<div className="absolute inset-0 flex items-center rounded-2xl justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+					<div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black bg-opacity-50 transition-opacity duration-300">
 						<button
 							className="rounded-full bg-white p-2 text-gray-800 hover:bg-gray-100"
 							onClick={() => onQuickView(product)}
@@ -62,9 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 				</h3>
 				<div className="mb-2 flex items-center">
 					<Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
-					<span className="text-sm text-gray-700">
-						{product?.rating}
-					</span>
+					<span className="text-sm text-gray-700">{product?.rating}</span>
 					<span className="ml-1 text-xs text-gray-400">
 						({product?.rating})
 					</span>

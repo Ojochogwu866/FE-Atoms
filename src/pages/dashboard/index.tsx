@@ -4,7 +4,7 @@ import Main from './Main';
 
 function index() {
 	return (
-		<div className=" mt-8">
+		<div className="mt-8">
 			<Main />
 			<FlashSales />
 			<AllProducts />

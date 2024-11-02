@@ -1,10 +1,14 @@
 import { Bell, ShoppingCart, User } from 'lucide-react';
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Login from '../../pages/Login';
 import Register from '../../pages/Register';
+import {
+	logout,
+	selectIsAuthenticated,
+	selectUser,
+} from '../../store/authSlice';
 import { RootState } from '../../store/store';
-import { selectIsAuthenticated, selectUser, logout } from '../../store/authSlice';
 import Modal from './Modal';
 import SearchBar from './Searchbar';
 
@@ -13,10 +17,7 @@ interface HeaderProps {
 	notificationCount?: number;
 }
 
-const Header: React.FC<HeaderProps> = ({
-	title,
-	notificationCount,
-}) => {
+const Header: React.FC<HeaderProps> = ({ title, notificationCount }) => {
 	const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 	const [isLoginOpen, setIsLoginOpen] = useState(false);
 	const [isRegisterOpen, setIsRegisterOpen] = useState(false);
