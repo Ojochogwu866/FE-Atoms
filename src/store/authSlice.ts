@@ -1,27 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { authService } from '../services/authService';
+import { AuthState, LoginCredentials, User } from '../types/auth';
 import { RootState } from './store';
-
-interface AuthState {
-	user: User | null;
-	token: string | null;
-	isAuthenticated: boolean;
-	isLoading: boolean;
-	error: string | null;
-}
-
-interface User {
-	id: string;
-	email: string;
-	role: string;
-}
-
-interface AuthResponse {
-	status: string;
-	data: {
-		user: User;
-		token: string;
-	};
-}
 
 const loadInitialState = (): AuthState => {
 	try {
@@ -66,23 +46,9 @@ const saveToLocalStorage = (user: User, token: string) => {
 
 export const loginUser = createAsyncThunk(
 	'auth/login',
-	async (
-		credentials: { email: string; password: string },
-		{ rejectWithValue }
-	) => {
+	async (credentials: LoginCredentials, { rejectWithValue }) => {
 		try {
-			const response = await fetch('http://localhost:3000/api/auth/signin', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(credentials),
-			});
-
-			if (!response.ok) {
-				throw new Error('Login failed');
-			}
-
-			const data: AuthResponse = await response.json();
-
+			const data = await authService.login(credentials);
 			if (data.status === 'success' && data.data.user && data.data.token) {
 				saveToLocalStorage(data.data.user, data.data.token);
 				return data.data;
@@ -97,23 +63,9 @@ export const loginUser = createAsyncThunk(
 
 export const registerUser = createAsyncThunk(
 	'auth/register',
-	async (
-		credentials: { email: string; password: string },
-		{ rejectWithValue }
-	) => {
+	async (credentials: LoginCredentials, { rejectWithValue }) => {
 		try {
-			const response = await fetch('http://localhost:3000/api/auth/signup', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(credentials),
-			});
-
-			if (!response.ok) {
-				throw new Error('Registration failed');
-			}
-
-			const data: AuthResponse = await response.json();
-
+			const data = await authService.register(credentials);
 			if (data.status === 'success' && data.data.user && data.data.token) {
 				saveToLocalStorage(data.data.user, data.data.token);
 				return data.data;

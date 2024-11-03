@@ -34,7 +34,7 @@ export const useFetchProducts = (type: ProductType, category?: string) => {
 					dispatch(fetchAllProducts());
 					break;
 				case 'limited':
-					dispatch(fetchLimitedProducts());
+					dispatch(fetchLimitedProducts(10));
 					break;
 				case 'category':
 					if (category) {

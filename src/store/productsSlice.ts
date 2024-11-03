@@ -1,16 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-export interface Product {
-	_id: string;
-	name: string;
-	price: string;
-	description: string;
-	category: string;
-	rating: string;
-	images: string;
-	createdAt: string;
-	updatedAt: string;
-}
+import { productService } from '../services/productService';
+import { Product } from '../types/products';
 
 interface ProductsState {
 	items: Product[];
@@ -30,16 +20,11 @@ export const fetchAllProducts = createAsyncThunk<
 	{ rejectValue: string }
 >('products/fetchAllProducts', async (_, thunkAPI) => {
 	try {
-		const response = await fetch('http://localhost:3000/api/products');
-		if (!response.ok) throw new Error('Network response was not ok');
-		const data = await response.json();
-		if (data.status === 'success' && Array.isArray(data.data.products)) {
-			return data.data.products;
-		} else {
-			throw new Error('Invalid data structure');
-		}
+		return await productService.getAllProducts();
 	} catch (error) {
-		return thunkAPI.rejectWithValue('Failed to fetch all products.');
+		return thunkAPI.rejectWithValue(
+			(error as Error).message || 'Failed to fetch all products.'
+		);
 	}
 });
 
@@ -49,18 +34,11 @@ export const fetchLimitedProducts = createAsyncThunk<
 	{ rejectValue: string }
 >('products/fetchLimitedProducts', async (limit, thunkAPI) => {
 	try {
-		const response = await fetch(
-			`http://localhost:3000/api/products?limit=${limit}`
-		);
-		if (!response.ok) throw new Error('Network response was not ok');
-		const data = await response.json();
-		if (data.status === 'success' && Array.isArray(data.data.products)) {
-			return data.data.products;
-		} else {
-			throw new Error('Invalid data structure');
-		}
+		return await productService.getLimitedProducts(limit);
 	} catch (error) {
-		return thunkAPI.rejectWithValue('Failed to fetch limited products.');
+		return thunkAPI.rejectWithValue(
+			(error as Error).message || 'Failed to fetch limited products.'
+		);
 	}
 });
 
@@ -70,18 +48,11 @@ export const fetchProductsByCategory = createAsyncThunk<
 	{ rejectValue: string }
 >('products/fetchProductsByCategory', async (category, thunkAPI) => {
 	try {
-		const response = await fetch(
-			`http://localhost:3000/api/products/category/${category}`
-		);
-		if (!response.ok) throw new Error('Network response was not ok');
-		const data = await response.json();
-		if (data.status === 'success' && Array.isArray(data.data.products)) {
-			return data.data.products;
-		} else {
-			throw new Error('Invalid data structure');
-		}
+		return await productService.getProductsByCategory(category);
 	} catch (error) {
-		return thunkAPI.rejectWithValue('Failed to fetch products by category.');
+		return thunkAPI.rejectWithValue(
+			(error as Error).message || 'Failed to fetch products by category.'
+		);
 	}
 });
 
@@ -94,50 +65,56 @@ const productsSlice = createSlice({
 			// All Products
 			.addCase(fetchAllProducts.pending, (state) => {
 				state.allProducts.status = 'loading';
+				state.allProducts.error = null; // Reset error on loading
 			})
 			.addCase(
 				fetchAllProducts.fulfilled,
 				(state, action: PayloadAction<Product[]>) => {
 					state.allProducts.status = 'succeeded';
 					state.allProducts.items = action.payload;
+					state.allProducts.error = null;
 				}
 			)
 			.addCase(fetchAllProducts.rejected, (state, action) => {
 				state.allProducts.status = 'failed';
 				state.allProducts.error =
-					action.payload || 'Failed to fetch all products';
+					action.payload ?? 'Failed to fetch all products';
 			})
 			// Limited Products
 			.addCase(fetchLimitedProducts.pending, (state) => {
 				state.limitedProducts.status = 'loading';
+				state.limitedProducts.error = null; // Reset error on loading
 			})
 			.addCase(
 				fetchLimitedProducts.fulfilled,
 				(state, action: PayloadAction<Product[]>) => {
 					state.limitedProducts.status = 'succeeded';
 					state.limitedProducts.items = action.payload;
+					state.limitedProducts.error = null;
 				}
 			)
 			.addCase(fetchLimitedProducts.rejected, (state, action) => {
 				state.limitedProducts.status = 'failed';
 				state.limitedProducts.error =
-					action.payload || 'Failed to fetch limited products';
+					action.payload ?? 'Failed to fetch limited products';
 			})
 			// Category Products
 			.addCase(fetchProductsByCategory.pending, (state) => {
 				state.categoryProducts.status = 'loading';
+				state.categoryProducts.error = null; // Reset error on loading
 			})
 			.addCase(
 				fetchProductsByCategory.fulfilled,
 				(state, action: PayloadAction<Product[]>) => {
 					state.categoryProducts.status = 'succeeded';
 					state.categoryProducts.items = action.payload;
+					state.categoryProducts.error = null;
 				}
 			)
 			.addCase(fetchProductsByCategory.rejected, (state, action) => {
 				state.categoryProducts.status = 'failed';
 				state.categoryProducts.error =
-					action.payload || 'Failed to fetch products by category';
+					action.payload ?? 'Failed to fetch products by category';
 			});
 	},
 });

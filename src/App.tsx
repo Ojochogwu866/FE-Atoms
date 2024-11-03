@@ -1,4 +1,3 @@
-// App.tsx
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import DropNotification from './components/ui/DropNotification';
@@ -10,7 +9,6 @@ function App() {
 	const isAuthenticated = useSelector(selectIsAuthenticated);
 	const location = useLocation();
 
-	// Only redirect for specific protected routes (e.g., checkout, profile)
 	const protectedRoutes = ['/checkout', '/profile', '/orders'];
 	if (!isAuthenticated && protectedRoutes.includes(location.pathname)) {
 		return <Navigate to="/" replace />;

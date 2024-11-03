@@ -8,22 +8,70 @@ import {
 	NoProducts,
 } from '../../features/Products/ProductsState';
 import { useFetchProducts } from '../../hooks/useFetch';
+import { Product } from '../../types/products';
+import Button from '../../components/ui/button';
+import Drawer from '../../components/ui/Drawer';
+import { addItemToCart } from '../../store/cartSlice';
+import {  useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
 
 function FlashSales() {
 	const { products, status, error } = useFetchProducts('all');
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const [displayProducts, setDisplayProducts] = useState([]);
+	const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+	const dispatch = useDispatch<AppDispatch>()
 
-	useEffect(() => {
-		if (Array.isArray(products?.data?.products)) {
-			setDisplayProducts(products.data.products.slice(0, 10));
-		} else if (Array.isArray(products)) {
-			setDisplayProducts(products.slice(0, 10));
-		} else {
-			setDisplayProducts([]);
-		}
-	}, [products]);
+	const handleQuickView = (product: Product | null) => {
+		setSelectedProduct(product);
+	};
+
+useEffect(() => {
+    if (Array.isArray(products)) {
+        setDisplayProducts(products.slice(0, 10));
+    } else {
+        setDisplayProducts([]);
+    }
+}, [products]);
+
+	const renderProductDrawer = () => (
+		<Drawer
+			isOpen={!!selectedProduct}
+			onClose={() => setSelectedProduct(null)}
+			width="40%"
+		>
+			{selectedProduct && (
+				<div className="space-y-6">
+					<img
+						src={selectedProduct.images}
+						alt={selectedProduct.name}
+						className="w-full rounded-lg"
+					/>
+					<h2 className="text-2xl font-bold">{selectedProduct.name}</h2>
+					<p className="text-gray-600">{selectedProduct.description}</p>
+					<div className="flex items-center justify-between">
+						<span className="text-2xl font-bold">${selectedProduct.price}</span>
+						<Button
+							onClick={() =>
+								dispatch(
+									addItemToCart({
+										id: selectedProduct._id,
+										title: selectedProduct.name,
+										price: selectedProduct.price,
+										image: selectedProduct.images,
+										quantity: 1,
+									})
+								)
+							}
+						>
+							Add to Cart
+						</Button>
+					</div>
+				</div>
+			)}
+		</Drawer>
+	);
 
 	const handleMoveLeft = () => {
 		setCurrentIndex((prevIndex) => {
@@ -69,7 +117,10 @@ function FlashSales() {
 						<div ref={containerRef} className="flex gap-4">
 							{displayProducts.map((product) => (
 								<div key={product._id} className="w-64 flex-shrink-0">
-									<ProductCard product={product} />
+									<ProductCard
+										product={product}
+										setSelectedProduct={handleQuickView}
+									/>
 								</div>
 							))}
 						</div>
@@ -108,9 +159,11 @@ function FlashSales() {
 					</div>
 				)}
 			</div>
+			{renderProductDrawer()}
 			{renderProducts()}
 		</div>
 	);
 }
 
 export default FlashSales;
+

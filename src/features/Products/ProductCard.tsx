@@ -1,9 +1,10 @@
 import { Eye, Heart, Star } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
 import Button from '../../components/ui/button';
-import { addToCart } from '../../store/cartSlice';
-import { Product } from '../../store/productsSlice';
+import { addItemToCart } from '../../store/cartSlice';
+import { Product } from '../../types/products';
 
 interface ProductCardProps {
 	product: Product;
@@ -16,11 +17,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
 	const [isLiked, setIsLiked] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 
 	const handleAddToCart = () => {
 		dispatch(
-			addToCart({
+			addItemToCart({
 				id: product._id,
 				title: product.name,
 				price: product.price,
@@ -55,7 +56,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 					<div className="absolute inset-0 flex items-center justify-center gap-2 bg-black bg-opacity-30">
 						<button
 							onClick={() => setSelectedProduct(product)}
-							className="text-white text-sm flex items-center"
+							className="flex items-center text-sm text-white"
 						>
 							<Eye className="mr-2 h-4 w-4" />
 							View item

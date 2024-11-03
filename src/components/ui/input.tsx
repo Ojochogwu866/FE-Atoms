@@ -15,7 +15,7 @@ const Input: React.FC<InputProps> = ({
 }) => {
 	const [touched, setTouched] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | undefined>(error);
-	const [isFocused, setIsFocused] = useState(false);
+	const [_, setIsFocused] = useState(false);
 
 	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 		setTouched(true);

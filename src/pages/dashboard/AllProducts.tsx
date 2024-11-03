@@ -1,7 +1,8 @@
 import gsap from 'gsap';
 import { Search, Tally4 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector, useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
 import Button from '../../components/ui/button';
 import Drawer from '../../components/ui/Drawer';
 import ProductCard from '../../features/Products/ProductCard';
@@ -12,12 +13,12 @@ import {
 } from '../../features/Products/ProductsState';
 import { useFetchProducts } from '../../hooks/useFetch';
 import {
-	addToCart,
-	removeFromCart,
-	updateQuantity,
+	addItemToCart,
+	removeItemFromCart,
+	updateCartItemQuantity,
 } from '../../store/cartSlice';
-import { Product } from '../../store/productsSlice';
 import { RootState } from '../../store/store';
+import { Product } from '../../types/products';
 
 function AllProducts() {
 	const { products, status, error } = useFetchProducts('all');
@@ -28,7 +29,7 @@ function AllProducts() {
 	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 	const [isCartOpen, setIsCartOpen] = useState(false);
 	const cartItems = useSelector((state: RootState) => state.cart.items);
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 
 	const handleQuickView = (product: Product | null) => {
 		setSelectedProduct(product);
@@ -91,7 +92,7 @@ function AllProducts() {
 						<Button
 							onClick={() =>
 								dispatch(
-									addToCart({
+									addItemToCart({
 										id: selectedProduct._id,
 										title: selectedProduct.name,
 										price: selectedProduct.price,
@@ -139,8 +140,8 @@ function AllProducts() {
 											<button
 												onClick={() =>
 													dispatch(
-														updateQuantity({
-															id: item.id,
+														updateCartItemQuantity({
+															productId: item.id,
 															quantity: Math.max(0, item.quantity - 1),
 														})
 													)
@@ -153,8 +154,8 @@ function AllProducts() {
 											<button
 												onClick={() =>
 													dispatch(
-														updateQuantity({
-															id: item.id,
+														updateCartItemQuantity({
+															productId: item.id,
 															quantity: item.quantity + 1,
 														})
 													)
@@ -166,7 +167,7 @@ function AllProducts() {
 										</div>
 									</div>
 									<button
-										onClick={() => dispatch(removeFromCart(item.id))}
+										onClick={() => dispatch(removeItemFromCart(item.id))}
 										className="text-red-500"
 									>
 										Remove
@@ -263,8 +264,8 @@ function AllProducts() {
 								</div>
 							))}
 						</div>
-									{renderProductDrawer()}
-			{renderCartDrawer()}
+						{renderProductDrawer()}
+						{renderCartDrawer()}
 						{displayCount < filteredProducts.length && (
 							<div className="mt-10 flex justify-center">
 								<Button onClick={handleSeeMore}>See More</Button>

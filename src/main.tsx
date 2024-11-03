@@ -1,16 +1,14 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import App from './App.tsx';
-import Auth from './features/Auth.tsx';
+import App from './App';
+import AuthWrapper from './features/AuthWrapper';
 import './index.css';
-import Category from './pages/Category.tsx';
+import Category from './pages/Category';
 import Dashboard from './pages/dashboard';
-import ErrorPage from './pages/ErrorPage.tsx';
-import Login from './pages/Login.tsx';
-import Register from './pages/Register.tsx';
-import { store } from './store/store.ts';
+import ErrorPage from './pages/ErrorPage';
+import { store } from './store/store';
 
 const router = createBrowserRouter([
 	{
@@ -22,7 +20,6 @@ const router = createBrowserRouter([
 				index: true,
 				element: <Dashboard />,
 			},
-			// Add other authenticated routes here
 		],
 	},
 	{
@@ -30,18 +27,8 @@ const router = createBrowserRouter([
 		element: <Category />,
 	},
 	{
-		path: '/',
-		element: <Auth />,
-		children: [
-			{
-				path: 'login',
-				element: <Login />,
-			},
-			{
-				path: 'register',
-				element: <Register />,
-			},
-		],
+		path: '/auth',
+		element: <AuthWrapper />,
 	},
 	{
 		path: '*',
@@ -49,7 +36,7 @@ const router = createBrowserRouter([
 	},
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<RouterProvider router={router} />
