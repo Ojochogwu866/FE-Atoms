@@ -29,10 +29,6 @@ const router = createBrowserRouter([
 		path: '/auth',
 		element: <AuthWrapper />,
 	},
-	{
-		path: '*',
-		element: <ErrorPage />,
-	},
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
