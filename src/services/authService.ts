@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api/auth';
+const API_URL = import.meta.env.VITE_APP_BASE_URL
 
 export interface LoginCredentials {
 	email: string;
@@ -21,7 +21,7 @@ export interface AuthResponse {
 
 export const authService = {
 	async login(credentials: LoginCredentials): Promise<AuthResponse> {
-		const response = await fetch(`${API_URL}/signin`, {
+		const response = await fetch(`${API_URL}/auth/signin`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(credentials),
@@ -35,7 +35,7 @@ export const authService = {
 	},
 
 	async register(credentials: LoginCredentials): Promise<AuthResponse> {
-		const response = await fetch(`${API_URL}/signup`, {
+		const response = await fetch(`${API_URL}/auth/signup`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(credentials),
