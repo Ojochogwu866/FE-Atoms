@@ -1,77 +1,53 @@
-const CART_API_URL = 'http://localhost:3000/api/cart';
+// services/cartServices.ts
+import {
+	AddToCartPayload,
+	ApiResponse,
+	Cart,
+	UpdateCartQuantityPayload,
+} from '../types/products';
 
-interface CartItem {
-	id: string | number;
-	title: string;
-	price: string | number;
-	quantity: number;
-	image: string;
-}
+const API_URL = 'http://localhost:3000/api';
 
-interface UpdateQuantityPayload {
-	productId: string | number;
-	quantity: number;
-}
-
-export interface CartApiResponse {
-	status: string;
-	data: {
-		cart: CartItem[];
-	};
-}
-
-export const cartService = {
-	async getCart(): Promise<CartItem[]> {
-		const response = await fetch(CART_API_URL);
-		if (!response.ok) throw new Error('Failed to fetch cart');
-		const data: CartApiResponse = await response.json();
-		return data.data.cart;
+export const cartServices = {
+	// Get cart
+	getCart: async () => {
+		const response = await fetch(`${API_URL}/cart`);
+		const data: ApiResponse<{ cart: Cart }> = await response.json();
+		return data;
 	},
 
-	async addToCart(item: CartItem): Promise<CartItem[]> {
-		const response = await fetch(`${CART_API_URL}/add`, {
+	// Add to cart
+	addToCart: async (payload: AddToCartPayload) => {
+		const response = await fetch(`${API_URL}/cart/add`, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(item),
-		});
-		if (!response.ok) throw new Error('Failed to add item to cart');
-		const data: CartApiResponse = await response.json();
-		return data.data.cart;
-	},
-
-	async removeFromCart(productId: string | number): Promise<CartItem[]> {
-		const response = await fetch(`${CART_API_URL}/remove/${productId}`, {
-			method: 'DELETE',
-		});
-		if (!response.ok) throw new Error('Failed to remove item from cart');
-		const data: CartApiResponse = await response.json();
-		return data.data.cart;
-	},
-
-	async clearCart(): Promise<void> {
-		const response = await fetch(`${CART_API_URL}/clear`, {
-			method: 'DELETE',
-		});
-		if (!response.ok) throw new Error('Failed to clear cart');
-	},
-
-	async updateQuantity({
-		productId,
-		quantity,
-	}: UpdateQuantityPayload): Promise<CartItem[]> {
-		const response = await fetch(`${CART_API_URL}/update-quantity`, {
-			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ productId, quantity }),
+			body: JSON.stringify(payload),
 		});
+		const data: ApiResponse<{ cart: Cart }> = await response.json();
+		return data;
+	},
 
-		if (!response.ok) {
-			throw new Error('Failed to update item quantity');
-		}
+	// Update cart item quantity
+	updateCartQuantity: async (payload: UpdateCartQuantityPayload) => {
+		const response = await fetch(`${API_URL}/cart/update`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(payload),
+		});
+		const data: ApiResponse<{ cart: Cart }> = await response.json();
+		return data;
+	},
 
-		const data: CartApiResponse = await response.json();
-		return data.data.cart;
+	// Remove item from cart
+	removeFromCart: async (productId: string) => {
+		const response = await fetch(`${API_URL}/cart/${productId}`, {
+			method: 'DELETE',
+		});
+		const data: ApiResponse<{ cart: Cart }> = await response.json();
+		return data;
 	},
 };

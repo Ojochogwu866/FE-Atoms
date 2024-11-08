@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import Drawer from '../components/ui/Drawer';
 import Header from '../components/ui/Header';
+import Button from '../components/ui/button';
 import ProductCard from '../features/Products/ProductCard';
 import {
 	ErrorProducts,
@@ -9,12 +11,10 @@ import {
 	NoProducts,
 } from '../features/Products/ProductsState';
 import { useFetchProducts } from '../hooks/useFetch';
+import { addToCart } from '../store/cartSlice';
 import { fetchProductsByCategory } from '../store/productsSlice';
 import { AppDispatch } from '../store/store';
 import { Product } from '../types/products';
-import Drawer from '../components/ui/Drawer';
-import Button from '../components/ui/button';
-import { addItemToCart } from '../store/cartSlice';
 
 function Categories() {
 	const { categoryName } = useParams<{ categoryName: string }>();
@@ -26,7 +26,7 @@ function Categories() {
 		setSelectedProduct(product);
 	};
 
-		const renderProductDrawer = () => (
+	const renderProductDrawer = () => (
 		<Drawer
 			isOpen={!!selectedProduct}
 			onClose={() => setSelectedProduct(null)}
@@ -46,11 +46,8 @@ function Categories() {
 						<Button
 							onClick={() =>
 								dispatch(
-									addItemToCart({
-										id: selectedProduct._id,
-										title: selectedProduct.name,
-										price: selectedProduct.price,
-										image: selectedProduct.images,
+									addToCart({
+										productId: selectedProduct._id,
 										quantity: 1,
 									})
 								)

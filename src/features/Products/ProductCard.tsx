@@ -1,9 +1,9 @@
 import { Eye, Heart, Star } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store/store';
 import Button from '../../components/ui/button';
-import { addItemToCart } from '../../store/cartSlice';
+import { addToCart } from '../../store/cartSlice';
+import { AppDispatch } from '../../store/store';
 import { Product } from '../../types/products';
 
 interface ProductCardProps {
@@ -21,11 +21,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 	const handleAddToCart = () => {
 		dispatch(
-			addItemToCart({
-				id: product._id,
-				title: product.name,
-				price: product.price,
-				image: product.images,
+			addToCart({
+				productId: product._id,
 				quantity: 1,
 			})
 		);
@@ -72,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 					<span className="ml-1 text-sm text-gray-600">{product?.rating}</span>
 				</div>
 				<div className="mt-2 flex items-center justify-between">
-					<span className="text-lg font-bold">${product.price}</span>
+					<span className="text-base font-bold">{product.price}</span>
 					<Button onClick={handleAddToCart}>Add to cart</Button>
 				</div>
 			</div>

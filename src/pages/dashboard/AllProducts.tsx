@@ -1,8 +1,7 @@
 import gsap from 'gsap';
 import { Search, Tally4 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import {  useSelector, useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../components/ui/button';
 import Drawer from '../../components/ui/Drawer';
 import ProductCard from '../../features/Products/ProductCard';
@@ -13,11 +12,12 @@ import {
 } from '../../features/Products/ProductsState';
 import { useFetchProducts } from '../../hooks/useFetch';
 import {
-	addItemToCart,
+	addToCart,
 	removeItemFromCart,
+	selectCartItems,
 	updateCartItemQuantity,
 } from '../../store/cartSlice';
-import { RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { Product } from '../../types/products';
 
 function AllProducts() {
@@ -28,7 +28,7 @@ function AllProducts() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 	const [isCartOpen, setIsCartOpen] = useState(false);
-	const cartItems = useSelector((state: RootState) => state.cart.items);
+	const cartItems = useSelector(selectCartItems);
 	const dispatch = useDispatch<AppDispatch>();
 
 	const handleQuickView = (product: Product | null) => {
@@ -92,11 +92,8 @@ function AllProducts() {
 						<Button
 							onClick={() =>
 								dispatch(
-									addItemToCart({
-										id: selectedProduct._id,
-										title: selectedProduct.name,
-										price: selectedProduct.price,
-										image: selectedProduct.images,
+									addToCart({
+										productId: selectedProduct._id,
 										quantity: 1,
 									})
 								)
@@ -118,63 +115,60 @@ function AllProducts() {
 		>
 			<div className="space-y-6">
 				<h2 className="text-2xl font-bold">Shopping Cart</h2>
-				{cartItems.length === 0 ? (
-					<p className="text-gray-500">Your cart is empty</p>
-				) : (
-					<>
-						<div className="space-y-4">
-							{cartItems.map((item) => (
-								<div
-									key={item.id}
-									className="flex items-center gap-4 border-b pb-4"
-								>
-									<img
-										src={item.image}
-										alt={item.title}
-										className="h-20 w-20 rounded-lg object-cover"
-									/>
-									<div className="flex-1">
-										<h3 className="font-semibold">{item.title}</h3>
-										<p className="text-gray-600">${item.price}</p>
-										<div className="mt-2 flex items-center gap-2">
-											<button
-												onClick={() =>
-													dispatch(
-														updateCartItemQuantity({
-															productId: item.id,
-															quantity: Math.max(0, item.quantity - 1),
-														})
-													)
-												}
-												className="rounded-md bg-gray-100 px-2 py-1"
-											>
-												-
-											</button>
-											<span>{item.quantity}</span>
-											<button
-												onClick={() =>
-													dispatch(
-														updateCartItemQuantity({
-															productId: item.id,
-															quantity: item.quantity + 1,
-														})
-													)
-												}
-												className="rounded-md bg-gray-100 px-2 py-1"
-											>
-												+
-											</button>
-										</div>
+				{cartItems && cartItems.length > 0 ? (
+					<div className="space-y-4">
+						{cartItems.map((item) => (
+							<div
+								key={item._id}
+								className="flex items-center gap-4 border-b pb-4"
+							>
+								<img
+									src={item.product.images}
+									alt={item.product.name}
+									className="h-20 w-20 rounded-lg object-cover"
+								/>
+								<div className="flex-1">
+									<h3 className="font-semibold">{item.product.name}</h3>
+									<p className="text-gray-600">{item.product.price}</p>
+									<div className="mt-2 flex items-center gap-2">
+										<button
+											onClick={() =>
+												dispatch(
+													updateCartItemQuantity({
+														productId: item.product._id,
+														quantity: Math.max(0, item.quantity - 1),
+													})
+												)
+											}
+											className="rounded-md bg-gray-100 px-2 py-1"
+										>
+											-
+										</button>
+										<span>{item.quantity}</span>
+										<button
+											onClick={() =>
+												dispatch(
+													updateCartItemQuantity({
+														productId: item.product._id,
+														quantity: item.quantity + 1,
+													})
+												)
+											}
+											className="rounded-md bg-gray-100 px-2 py-1"
+										>
+											+
+										</button>
 									</div>
-									<button
-										onClick={() => dispatch(removeItemFromCart(item.id))}
-										className="text-red-500"
-									>
-										Remove
-									</button>
 								</div>
-							))}
-						</div>
+								<button
+									onClick={() => dispatch(removeItemFromCart(item.product._id))}
+									className="text-red-500"
+								>
+									Remove
+								</button>
+							</div>
+						))}
+
 						<div className="mt-6">
 							<div className="flex justify-between text-lg font-semibold">
 								<span>Total:</span>
@@ -183,7 +177,9 @@ function AllProducts() {
 									{cartItems
 										.reduce(
 											(total, item) =>
-												total + Number(item.price) * item.quantity,
+												total +
+												Number(item.product.price.replace('$', '')) *
+													item.quantity,
 											0
 										)
 										.toFixed(2)}
@@ -191,7 +187,12 @@ function AllProducts() {
 							</div>
 							<Button className="mt-4 w-full">Proceed to Checkout</Button>
 						</div>
-					</>
+					</div>
+				) : (
+					<p className="text-gray-500">
+						You currently have no products in your cart, please add products to
+						continue
+					</p>
 				)}
 			</div>
 		</Drawer>

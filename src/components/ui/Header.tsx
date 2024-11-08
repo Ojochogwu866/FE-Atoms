@@ -10,9 +10,10 @@ import {
 } from '../../store/authSlice';
 import {
 	removeItemFromCart,
+	selectCartItems,
 	updateCartItemQuantity,
 } from '../../store/cartSlice';
-import { AppDispatch, RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import Drawer from './Drawer';
 import Modal from './Modal';
 import SearchBar from './Searchbar';
@@ -32,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ title, notificationCount }) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const isAuthenticated = useSelector(selectIsAuthenticated);
 	const user = useSelector(selectUser);
-	const cartItems = useSelector((state: RootState) => state.cart.items);
+	const cartItems = useSelector(selectCartItems);
 	const cartItemCount = cartItems.reduce(
 		(total, item) => total + item.quantity,
 		0
@@ -51,66 +52,60 @@ const Header: React.FC<HeaderProps> = ({ title, notificationCount }) => {
 		>
 			<div className="space-y-6">
 				<h2 className="text-2xl font-bold">Shopping Cart</h2>
-				{cartItems.length === 0 ? (
-					<p className="text-gray-500">
-						You currently have no products in your cart, please add products to
-						continue
-					</p>
-				) : (
-					<>
-						<div className="space-y-4">
-							{cartItems.map((item) => (
-								<div
-									key={item.id}
-									className="flex items-center gap-4 border-b pb-4"
-								>
-									<img
-										src={item.image}
-										alt={item.title}
-										className="h-20 w-20 rounded-lg object-cover"
-									/>
-									<div className="flex-1">
-										<h3 className="font-semibold">{item.title}</h3>
-										<p className="text-gray-600">${item.price}</p>
-										<div className="mt-2 flex items-center gap-2">
-											<button
-												onClick={() =>
-													dispatch(
-														updateCartItemQuantity({
-															productId: item.id,
-															quantity: Math.max(0, item.quantity - 1),
-														})
-													)
-												}
-												className="rounded-md bg-gray-100 px-2 py-1"
-											>
-												-
-											</button>
-											<span>{item.quantity}</span>
-											<button
-												onClick={() =>
-													dispatch(
-														updateCartItemQuantity({
-															productId: item.id,
-															quantity: item.quantity + 1,
-														})
-													)
-												}
-												className="rounded-md bg-gray-100 px-2 py-1"
-											>
-												+
-											</button>
-										</div>
+				{cartItems && cartItems.length > 0 ? (
+					<div className="space-y-4">
+						{cartItems.map((item) => (
+							<div
+								key={item._id}
+								className="flex items-center gap-4 border-b pb-4"
+							>
+								<img
+									src={item.product.images}
+									alt={item.product.name}
+									className="h-20 w-20 rounded-lg object-cover"
+								/>
+								<div className="flex-1">
+									<h3 className="font-semibold">{item.product.name}</h3>
+									<p className="text-gray-600">{item.product.price}</p>
+									<div className="mt-2 flex items-center gap-2">
+										<button
+											onClick={() =>
+												dispatch(
+													updateCartItemQuantity({
+														productId: item.product._id,
+														quantity: Math.max(0, item.quantity - 1),
+													})
+												)
+											}
+											className="rounded-md bg-gray-100 px-2 py-1"
+										>
+											-
+										</button>
+										<span>{item.quantity}</span>
+										<button
+											onClick={() =>
+												dispatch(
+													updateCartItemQuantity({
+														productId: item.product._id,
+														quantity: item.quantity + 1,
+													})
+												)
+											}
+											className="rounded-md bg-gray-100 px-2 py-1"
+										>
+											+
+										</button>
 									</div>
-									<button
-										onClick={() => dispatch(removeItemFromCart(item.id))}
-										className="text-red-500"
-									>
-										Remove
-									</button>
 								</div>
-							))}
-						</div>
+								<button
+									onClick={() => dispatch(removeItemFromCart(item.product._id))}
+									className="text-red-500"
+								>
+									Remove
+								</button>
+							</div>
+						))}
+
 						<div className="mt-6">
 							<div className="flex justify-between text-lg font-semibold">
 								<span>Total:</span>
@@ -119,7 +114,9 @@ const Header: React.FC<HeaderProps> = ({ title, notificationCount }) => {
 									{cartItems
 										.reduce(
 											(total, item) =>
-												total + Number(item.price) * item.quantity,
+												total +
+												Number(item.product.price.replace('$', '')) *
+													item.quantity,
 											0
 										)
 										.toFixed(2)}
@@ -127,7 +124,12 @@ const Header: React.FC<HeaderProps> = ({ title, notificationCount }) => {
 							</div>
 							<Button className="mt-4 w-full">Proceed to Checkout</Button>
 						</div>
-					</>
+					</div>
+				) : (
+					<p className="text-gray-500">
+						You currently have no products in your cart, please add products to
+						continue
+					</p>
 				)}
 			</div>
 		</Drawer>

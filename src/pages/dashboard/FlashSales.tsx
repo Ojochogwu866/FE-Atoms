@@ -1,6 +1,9 @@
 import gsap from 'gsap';
 import { MoveLeft, MoveRight, Zap } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import Button from '../../components/ui/button';
+import Drawer from '../../components/ui/Drawer';
 import ProductCard from '../../features/Products/ProductCard';
 import {
 	ErrorProducts,
@@ -8,12 +11,9 @@ import {
 	NoProducts,
 } from '../../features/Products/ProductsState';
 import { useFetchProducts } from '../../hooks/useFetch';
-import { Product } from '../../types/products';
-import Button from '../../components/ui/button';
-import Drawer from '../../components/ui/Drawer';
-import { addItemToCart } from '../../store/cartSlice';
-import {  useDispatch } from 'react-redux';
+import { addToCart } from '../../store/cartSlice';
 import { AppDispatch } from '../../store/store';
+import { Product } from '../../types/products';
 
 function FlashSales() {
 	const { products, status, error } = useFetchProducts('all');
@@ -21,19 +21,19 @@ function FlashSales() {
 	const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-	const dispatch = useDispatch<AppDispatch>()
+	const dispatch = useDispatch<AppDispatch>();
 
 	const handleQuickView = (product: Product | null) => {
 		setSelectedProduct(product);
 	};
 
-useEffect(() => {
-    if (Array.isArray(products)) {
-        setDisplayProducts(products.slice(0, 10));
-    } else {
-        setDisplayProducts([]);
-    }
-}, [products]);
+	useEffect(() => {
+		if (Array.isArray(products)) {
+			setDisplayProducts(products.slice(0, 10));
+		} else {
+			setDisplayProducts([]);
+		}
+	}, [products]);
 
 	const renderProductDrawer = () => (
 		<Drawer
@@ -55,11 +55,8 @@ useEffect(() => {
 						<Button
 							onClick={() =>
 								dispatch(
-									addItemToCart({
-										id: selectedProduct._id,
-										title: selectedProduct.name,
-										price: selectedProduct.price,
-										image: selectedProduct.images,
+									addToCart({
+										productId: selectedProduct._id,
 										quantity: 1,
 									})
 								)
@@ -166,4 +163,3 @@ useEffect(() => {
 }
 
 export default FlashSales;
-
