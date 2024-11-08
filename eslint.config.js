@@ -11,7 +11,7 @@ export default [
 		ignores: ['dist'],
 	},
 	{
-		files: ['**/*.{js,ts,tsx}'],
+		files: ['**/*.{js,ts,tsx,html,json}'],
 		extends: [
 			js.configs.recommended,
 			...tseslint.configs.recommended,
