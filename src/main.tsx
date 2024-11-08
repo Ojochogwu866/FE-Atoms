@@ -7,7 +7,7 @@ import AuthWrapper from './features/AuthWrapper';
 import './index.css';
 import Category from './pages/Category';
 import Dashboard from './pages/dashboard';
-import ErrorPage from './pages/ErrorPage';
+import ErrorPage from './pages/ErrorPage'
 import { store } from './store/store';
 
 const router = createBrowserRouter([
