@@ -115,8 +115,8 @@ export default tseslint.config({
 ### Environment Variables
 Create a `.env` file in the root directory:
 ```env
-VITE_APP_TITLE=Your App Title
-VITE_API_URL=Your API URL
+VITE_APP_TITLE=Atoms
+GITHUB_API_URL=https://github.com/Ojochogwu866/BE-Atoms
 ```
 
 ## 📚 Additional Resources
